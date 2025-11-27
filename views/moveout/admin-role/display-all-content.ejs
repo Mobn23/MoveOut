@@ -1,0 +1,42 @@
+<%- include("../../partials/header-admin.ejs") %>
+
+<div class="boxes-main-container">
+<% if (allContent && allContent.length > 0) { %>
+    <div class="container mt-5">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                    <th>content ID</th>
+                    <th>content file path</th>
+                    <th>content original name</th>
+                    <th>content file type</th>
+                    <th>content file size</th>
+                    <th>content created</th>
+                    <th>content updated</th>
+                    <th>content for box: </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% allContent.forEach(function(content) { %>
+                    <tr>
+                    <td><%= content.id %></td>
+                    <th><%= content.file_path %></th>
+                    <th><%= content.original_name %></th>
+                    <th><%= content.file_type %></th>
+                    <th><%= content.file_size %></th>
+                    <td><%= content.created_at %></td>
+                    <td><%= content.updated_at %></td>
+                    <td><%= content.storage_boxes_id %></td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+<% } else { %>
+    <p>No contents found.</p>
+<% } %>
+</div>
+
+<%- include("../../partials/footer.ejs") %>

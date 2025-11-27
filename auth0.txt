@@ -1,0 +1,72 @@
+Here’s the flow and why the callback route is necessary:
+    User clicks login – They are redirected to the Auth0 login page.
+    User authenticates (via Google, for example).
+    Auth0 processes the authentication and then redirects the user back to our app’s callback route.
+    The callback route in our app verifies the response from Auth0 (this includes the user’s token, profile, etc.).
+    Once verified, the app can log in the user and proceed to the requested page, like /profile.
+Why the callback URL matters:
+    It tells Auth0 where to send the user back to after they log in.
+    If this URL isn’t correctly configured in Auth0 settings or in our app routing, the process breaks, resulting in errors.
+
+
+in registrationLoginRoutes router /logout:
+req.protocol: We get the protocol (like http or https) from the request object itself. It’s part of the body of the request that Express constructs.
+req.get('host'): We get the host (like localhost:1337 or example.com) from the request headers, which are sent by the client and accessed via the headers.
+
+
+
+Here’s a brief explanation of how we connected Google Developer Console with Auth0:
+    Google Developer Console:
+        Created OAuth credentials and noted the client ID and client secret.
+
+    Auth0 Dashboard:
+        In the Auth0 app settings, added the Google connection.
+        Entered the client ID and client secret from the Google Developer Console to authenticate users via Google.
+
+    Allowed URLs:
+        Configured the allowed callback URLs and allowed logout URLs in both the Google Developer Console and Auth0 to ensure the app redirects correctly after authentication and logout.
+        So established a connection between Google and Auth0, allowing users to log in using their Google accounts while managing everything through Auth0 in our app.
+
+
+How i setup the Auth0 3rd party and connected between my app and the Google email (Google dev console)(with details):
+    I created a project in Google Developer Console, then generated OAuth credentials to get the client ID and client secret.
+    Then entered those credentials into the Auth0 dashboard to connect the two services for authentication.
+    This setup allows users to log in with their Google accounts through our application using Auth0.
+
+    Then in Auth0 dashboard:
+        Authentication/social so created social connection. Then put there the required google credentials.
+
+    Then:
+        in Google dev console, Authorized redirect URIs:
+            http://localhost:1337/callback
+            https://dev-yt77yejxhlayewxi.eu.auth0.com/login/callback
+        
+        in Auth0 dashboard Applications/ inside our app:
+            Allowed callback URLs:
+                http://localhost:1337/callback
+            Allowed logout URLs:
+                http://localhost:1337/logout, http://localhost:1337/login
+            Allowed web origins:
+                http://localhost:1337
+    Then in my app in index.js:
+        I included "app.use(auth(config));" which passes the config object in utils.js to "express-openid-connect" library so i set the configurations in my app as well.
+
+    Then in my app in registrationLoginRoutes router:
+        Created isAuthenticated middleware in utils.js, adapted it to check both authentication systems so we can use it to protect routes so if userId isn't in session so redirect to login page.
+
+        Then created routes:
+            /auth/login
+            /auth/callback
+        And modified routes to adapt both auth systems:
+            /logout
+            /profile
+            / (The root route)
+        And left routes for the maniual auth system:
+            /register routes
+            /login routes
+            /verify
+
+    So now i'm relying on my session and Auth0 session for proccessing data accross routes(like userName, userId mainly).
+    And the user's data is saved in my database for the other functionalities that need relations like create boxes, labels ..etc and userId in the session so as same as the maniual system.
+
+I implemented the saving of Google users in my database and setting their IDs in session in /profile route in registrationLoginRoutes router.

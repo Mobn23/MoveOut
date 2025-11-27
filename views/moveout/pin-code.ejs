@@ -1,0 +1,14 @@
+<%- include("../partials/header-before-logging-in.ejs") %>
+
+<div class="container mt-5">
+    <h1>Enter PIN</h1>
+    <p>The 6-digit PIN code has been generated and will expired after 2 minutes. Please enter it below:</p>
+    <form action="/content/label/<%= labelId %>/verify" method="POST">
+        <div class="form-group">
+            <input type="text" class="form-control" id="pin" name="pin" required pattern="\d{6}" minlength="6" maxlength="6" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+<%- include("../partials/footer.ejs") %>

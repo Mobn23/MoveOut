@@ -1,0 +1,30 @@
+{
+  "name": "moveout",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mo Bn <mohamedbnshi@gmail.com>",
+  "license": "CC BY-NC",
+  "description": "",
+  "dependencies": {
+    "@ngrok/ngrok": "^1.4.1",
+    "bcrypt": "^5.1.1",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.4.5",
+    "dropzone": "^6.0.0-beta.2",
+    "ejs": "^3.1.10",
+    "express": "^4.21.1",
+    "express-openid-connect": "^2.17.1",
+    "express-session": "^1.18.0",
+    "express-validator": "^7.2.0",
+    "mime-types": "^2.1.35",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.15",
+    "promise-mysql": "^5.2.0",
+    "qrcode": "^1.5.4",
+    "sharp": "^0.33.5",
+    "validator": "^13.12.0"
+  }
+}

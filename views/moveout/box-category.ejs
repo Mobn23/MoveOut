@@ -1,0 +1,21 @@
+<%- include("../partials/header-before-logging-in.ejs") %>
+
+<h4><%= welcome %> <h4>
+
+<div>
+    <form action="/box/category" method="post" required>
+        <label for="category">Select box category</label>
+        <select id="category" name="category">
+            <option value="Fragile">Fragile</option>
+            <option value="Clothing">Clothing</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Books">Books</option>
+            <option value="Furniture">Furniture</option>
+            <option value="Miscellaneous">Miscellaneous</option>
+        </select>
+        <br><br>
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+<%- include("../partials/footer.ejs") %>

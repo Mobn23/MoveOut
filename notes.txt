@@ -1,0 +1,88 @@
+When a user logs in, a session with a unique ID is created on the server. This ID is saved in a cookie on the browser. The server uses this session ID to retrieve and manage user data. When the user returns, the cookie with the session ID helps the server load the user’s saved information.
+JWT acts like a key that only authenticated and authorized users can use to unlock certain routes or actions in our application.
+
+When to Use JWT vs. Sessions
+JWT: When we need stateless, client-side authentication (for APIs, SPAs, or cross-domain apps).
+Sessions: For traditional web apps where user state is stored server-side and managed through a session cookie.
+
+JWT acts like a key that only authenticated and authorized users
+can use to unlock certain routes or actions in the application.
+
+Frontend to Backend: Query (GET), API (POST, PUT, etc.), Form (GET/POST).
+Backend to Frontend: Render HTML templates, Send JSON response for fetching.
+
+Use session storage for temporary data related to ongoing actions, such as inserting a box or assigning a label, which minimizes unnecessary database calls.
+Use database queries for persistent and historical data, such as displaying previously created boxes and their labels after a user logs back in.
+
+use public in index.JS
+Static files for the browser: express.static("public") allows us to access files like http://localhost:1337/label1.png without needing "public" in the URL.
+Server-side operations (like generating a QR code): we need to include "public" in the file path to let Node.js know where the file is, e.g., ./public/label1.png.
+The key difference is that express.static() affects how the browser accesses the files, while our server-side code (Node.js) still needs the full path to locate the files in the file system.
+
+QR Code implementing steps:
+Generate QR code → Save as image.
+Load label image → Use existing design.
+Combine images → Overlay QR code on the label.
+Save the result → New combined image for use.
+
+We need to pass the labelId as a string because the QRCode.toFile function expects the data to be in a string format to generate a proper QR code.
+QR codes typically store string data, so passing an integer directly can cause errors. Converting it to a string ensures compatibility.
+
+
+QR Code Generation: When the generateQRCode(id) function (in utils.js) runs, it should create a QR code image (e.g., label2.png) and save it in the qr_codes directory.
+
+path.join(__dirname, 'combined_labels') (in addQRCodeToLabel() in utils.js):
+    This uses the path module to create a path to a new directory named combined_labels.
+    It ensures that the path is constructed correctly, regardless of the operating system.
+    In this project, this means it takes the path from __dirname (which leads to src) and appends combined_labels to it,
+    effectively creating a path like /home/mobn/dbwebb-kurser/indproj/me/moveout/src/combined_labels.
+    This is where me saving the combined label images.
+
+
+
+note about typing pathes:
+    when specifying paths in my project, we typically consider the structure starting from the root of the project,
+    not just the file we're working in. This means that when we create a path,
+    we should think about how to navigate from the project root to the desired file or directory.
+
+
+
+The expression (/^.*[\\\/]public[\\\/]/, '/') is likely a regular expression (regex) pattern and a replacement string. Let's break it down:
+
+Regular Expression:
+
+^.* matches any character (.) zero or more times (*) from the start of the string (^).
+[\\\/] matches either a backslash (\) or a forward slash (/). The double backslash (\\) is necessary because the backslash is an escape character in regex.
+public matches the literal string "public".
+[\\\/] again matches either a backslash or a forward slash.
+So overall, this regex matches any string that contains the substring "public" surrounded by directory separators (slashes or backslashes), including everything before "public".
+
+Replacement:
+The second part, '/', indicates that the matched substring should be replaced with a single forward slash (/).
+
+Summary
+The regex (/^.*[\\\/]public[\\\/]/, '/') is used to match paths containing the "public" directory and replace that part with a single forward slash, helping to standardize file paths.
+
+
+
+BLOBs:
+    can store non-textual data like images, videos, PDFs, and other large binary files.
+
+
+
+req.path gives just the endpoint or route, not the full URL. If need the whole path, including the protocol, host, and endpoint, we can build it like this:
+    const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+
+Here’s a breakdown:
+    req.protocol gives the protocol (HTTP or HTTPS).
+    req.get('host') returns the host (e.g., localhost:3000).
+    req.originalUrl gives the full path, including the query string if present (e.g., /profile?user=123).
+
+
+
+Generally as for form data:
+    Make sure each form element that we want to send with the form body after submission has a unique name. This way, the server can easily process the data and update the database accordingly.
+
+For license i used (CC BY-NC 4.0) and put the legal code from (Creative Commons Attribution-NonCommercial 4.0 International) website in LICENSE file.
+
+I zipped the whole moveout root dir using(zip -r moveout.zip moveout) so created a zipped copy of the project.

@@ -1,0 +1,46 @@
+<%- include("../partials/header-before-logging-in.ejs") %>
+
+<h4><%= welcome %> <h4>
+
+<div class="labels">
+    <% if (labels && labels.length > 0) { %>
+        <% labels.forEach(label => { %>
+            <div class="label-item" data-label="<%= label.id %>">
+                <h3><%= label.name %></h3>
+                <img src="/<%= label.image_path %>" alt="<%= label.name %>">
+            </div>
+        <% }) %>
+    <% } else { %>
+        <p>No labels available.</p>
+    <% } %>
+</div>
+
+<script>
+    const labels = document.getElementsByClassName("label-item");
+
+    for (let i = 0; i < labels.length; i++) {
+        labels[i].addEventListener("click", function () {
+            const labelId = labels[i].getAttribute("data-label");
+
+            console.log(`Label ${i + 1} clicked: ${labelId}`);
+            fetch('/labels', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    labelsDesignsId: labelId
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                window.location.href = data.redirectUrl;
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+    }
+</script>
+
+<%- include("../partials/footer.ejs") %>

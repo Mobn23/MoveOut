@@ -1,0 +1,19 @@
+<%- include("../partials/header.ejs") %>
+
+
+<h2>
+    <div class="create-box-button-container">
+        <h2>Create a box</h2>
+        <a href="/box/category"><button type="button" class="btn btn-primary">Create Box</button></a>
+    </div>
+</h2>
+
+<% if (typeof error !== 'undefined' && error !== null ) { %>
+    <% if (error) { %>
+        <div class="alert alert-danger">
+            <%= error %>
+        </div>
+    <% } %>
+<% } %>
+
+<%- include("../partials/footer.ejs") %>

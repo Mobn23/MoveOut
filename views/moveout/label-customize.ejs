@@ -1,0 +1,37 @@
+<%- include("../partials/header-before-logging-in.ejs") %>
+
+<div class="welcome"> <h4> <%= welcome %> </h4> </div>
+
+<% if (labelPath) { %>
+    <div class="customize-label">
+        <img src="<%= labelPath %>" alt="Label Image">
+
+        <div class="title"> <h2>Add Box content!</h2> </div>
+        <div class="content-icons">
+            <i class="fas fa-file-alt icon" title="Text Note" onclick="triggerFileUpload('text');"></i>
+            <i class="fas fa-microphone icon" title="Record Audio" onclick="triggerFileUpload('audio');"></i>
+            <i class="fas fa-image icon" title="Upload Image" onclick="triggerFileUpload('image');"></i>
+        </div>
+
+        <form action="/upload" class="dropzone" id="my-dropzone"></form>
+
+        <!-- Hidden file inputs for icons -->
+        <input type="file" id="textUpload" accept="text/plain" style="display: none;" onchange="handleFileUpload(this, 'text', '#my-dropzone');">
+        <input type="file" id="audioUpload" accept="audio/*" style="display: none;" onchange="handleFileUpload(this, 'audio', '#my-dropzone');">
+        <input type="file" id="imageUpload" accept="image/*" style="display: none;" onchange="handleFileUpload(this, 'image', '#my-dropzone');">
+
+        <button id="content-submit-button" class="btn btn-primary">Finalize box?</button>
+    </div>
+<% } else { %>
+    <p>No label found.</p>
+<% } %>
+
+<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+<script src="/js/dropzone-config.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        initDropzoneWithCategoryForm("#my-dropzone", "content-submit-button", "/upload", "/display/boxes");
+    });
+</script>
+
+<%- include("../partials/footer.ejs") %>

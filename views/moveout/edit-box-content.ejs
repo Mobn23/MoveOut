@@ -1,0 +1,80 @@
+<%- include("../partials/header.ejs") %>
+
+<div class="edit-box-content-container">
+    <% if (boxContent && boxContent.length > 0) { %>
+        <h1><%= boxContent[0].category_name %></h1>
+        <% boxContent.forEach(item => { %>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">File: <%= item.boxes_content_orginal_name || 'No file name' %></h5>
+                    <% if (item.boxes_content_file_type) { %>
+                        <% if (item.boxes_content_file_type.startsWith('image/')) { %>
+                            <img src="/multer-uploads/<%= item.boxes_content_file_path %>" class="img-fluid" alt="Image Content">
+                        <% } %>
+
+                        <% if (item.boxes_content_file_type.startsWith('audio/')) { %>
+                            <audio controls>
+                                <source src="/multer-uploads/<%= item.boxes_content_file_path %>" type="<%= item.boxes_content_file_type %>">
+                                Your browser does not support the audio element.
+                            </audio>
+                        <% } %>
+
+                        <% if (item.boxes_content_file_type.startsWith('text/plain')) { %>
+                            <div class="text-area"><pre class="pre-element text-wrap"><%= item.fileContent %></pre></div>
+                        <% } %>
+
+                        <div class="content-details">
+
+                            <% if (totalContents > 1) { %> <!-- Only show delete button if there are more than 1 content -->
+                                <button 
+                                    class="delete-content-btn btn btn-danger"
+                                    data-content-id="<%= item.boxes_content_id %>"
+                                    data-box-id="<%= boxId %>"
+                                    onclick="deleteContent(this)">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            <% } else { %>
+                                <p class="text-muted">Cannot delete the last content</p> <!-- Message when there's only 1 content -->
+                            <% } %>
+                        </div>
+                    <% } else { %>
+                        <p>No file content available</p>
+                    <% } %>
+                </div>
+                
+            </div>
+        <% }); %>
+    <% } else { %>
+        <p>No content found.</p>
+    <% } %>
+</div>
+
+<script>
+    function deleteContent(button) {
+        if (confirm('Are you sure you want to delete this content?')) {
+            const contentId = button.getAttribute('data-content-id');
+
+            const boxId = button.getAttribute('data-box-id');
+
+            fetch(`/content/delete/${contentId}`, {
+                method: 'DELETE',
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                    // Remove the content item from the DOM
+                    button.closest('.card').remove();
+                } else {
+                    alert('Error deleting content: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error deleting content');
+            });
+        }
+    }
+</script>
+
+<%- include("../partials/footer.ejs") %>

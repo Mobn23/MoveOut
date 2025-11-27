@@ -1,0 +1,8 @@
+{
+    "user":     "dbadm",
+    "password": "P@ssw0rd",
+    "host":     "localhost",
+    "database": "moveout",
+    "port": 3306,
+    "multipleStatements": true
+}

@@ -1,0 +1,128 @@
+<%- include("../partials/header.ejs") %>
+
+<% if (labelPath && clickedLabelId && boxContent ) { %>
+    <div class="label-content-edit-container">
+
+        <div class="label-editing-image">
+            <img src="<%= labelPath %>" class="label-qr-image" alt="Label With QR Image" id="<%= clickedLabelId %>">
+        </div>
+
+        <!-- Form for editing label -->
+        <div class="edit-label-form-container">
+            <!-- Category Selection -->
+            <div class="box-category">
+                <label for="category">Update box category:</label>
+                <select id="category" name="category" class="form-control">
+                    <option value="Fragile">Fragile</option>
+                    <option value="Clothing">Clothing</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Books">Books</option>
+                    <option value="Furniture">Furniture</option>
+                    <option value="Miscellaneous">Miscellaneous</option>
+                </select>
+                <br><br>
+            </div>
+
+            <div class="customize-label">
+                <div class="title"> <h2>Add Extra content!</h2> </div>
+                <div class="content-icons">
+                    <i class="fas fa-file-alt icon" title="Text Note" onclick="triggerFileUpload('text');"></i>
+                    <i class="fas fa-microphone icon" title="Record Audio" onclick="triggerFileUpload('audio');"></i>
+                    <i class="fas fa-image icon" title="Upload Image" onclick="triggerFileUpload('image');"></i>
+                </div>
+                
+                <form action="/upload/additional/files" class="dropzone" id="dropzone"></form>
+
+                <!-- Hidden file inputs for icons -->
+                <input type="file" id="textUpload" accept="text/plain" style="display: none;" onchange="handleFileUpload(this, 'text', '#dropzone');">
+                <input type="file" id="audioUpload" accept="audio/*" style="display: none;" onchange="handleFileUpload(this, 'audio', '#dropzone');">
+                <input type="file" id="imageUpload" accept="image/*" style="display: none;" onchange="handleFileUpload(this, 'image', '#dropzone');">
+            </div>
+
+
+            <div class="edit-label-submit-button">
+                <button type="submit" class="btn btn-primary" id="done-edit-button">Done!</button>
+            <div>
+        </div>
+    </div>
+<% } else { %>
+    <p>No label found.</p>
+<% } %>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Set initial category value
+        var categoryName = "<%= boxContent[0].category_name %>";
+        var categorySelect = document.getElementById('category');
+        var boxId = "<%= boxContent[0].storage_boxes_id %>";
+
+        if (categoryName && categorySelect) {
+            categorySelect.value = categoryName;
+        }
+
+        // Add change event listener to category select
+        categorySelect.addEventListener('change', function() {
+            const updatedCategory = this.value;
+            
+            // Create FormData for category update
+            const formData = new FormData();
+            formData.append('boxId', boxId);
+            formData.append('category', updatedCategory);
+            
+            // Send category update to server using FormData
+            fetch("/upload/additional/files", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Category updated:', data);
+            })
+            .catch(error => console.error('Error updating category:', error));
+        });
+
+        // Handle form submission for file uploads
+        document.getElementById('done-edit-button').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            // Get the current category value
+            const currentCategory = categorySelect.value;
+
+            // Let Dropzone handle the file uploads
+            const dropzone = Dropzone.forElement("#dropzone");
+            
+            if (dropzone.getQueuedFiles().length > 0) {
+                dropzone.options.params = {
+                    boxId: boxId,
+                    category: currentCategory
+                };
+                dropzone.processQueue();
+            } else {
+                // If no files to upload, still send the category update
+                const formData = new FormData();
+                formData.append('boxId', boxId);
+                formData.append('category', currentCategory);
+                
+                fetch("/upload/additional/files", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(() => {
+                    window.location.href = "/display/boxes";
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        });
+    });
+</script>
+
+<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+<script src="/js/dropzone-config.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        initDropzoneWithCategoryForm("#dropzone", "done-edit-button", "/upload/additional/files" ,"/display/boxes");
+    });
+</script>
+<%- include("../partials/footer.ejs") %>

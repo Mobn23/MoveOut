@@ -1,0 +1,40 @@
+<%- include("../../partials/header-admin.ejs") %>
+
+<div class="boxes-main-container">
+<% if (logsData && logsData.length > 0) { %>
+    <div class="container mt-5">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                    <th>Log ID</th>
+                    <th>Triggered Table ID</th>
+                    <th>Related ID</th>
+                    <th>Action</th>
+                    <th>Affected Table</th>
+                    <th>Details</th>
+                    <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% logsData.forEach(function(log) { %>
+                    <tr>
+                    <td><%= log.log_id %></td>
+                    <td><%= log.triggered_table_id %></td>
+                    <td><%= log.related_id %></td>
+                    <td><%= log.action %></td>
+                    <td><%= log.affected_table %></td>
+                    <td><%= log.details %></td>
+                    <td><%= log.timestamp %></td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+<% } else { %>
+    <p>No logs found.</p>
+<% } %>
+</div>
+
+<%- include("../../partials/footer.ejs") %>

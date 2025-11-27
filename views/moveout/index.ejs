@@ -1,0 +1,63 @@
+<%- include("../partials/header-before-logging-in.ejs") %>
+
+<h1><%= welcome %> <h1>
+<div class="form-container">
+  <form action="/register" method="POST" id="registerForm">
+      <label for="username">Username:</label><br>
+      <input type="text" id="username" name="username" required>
+      <br><br>
+
+      <label for="email">Email:</label><br>
+      <input type="email" id="email" name="email" required>
+      <br><br>
+
+      <label for="password">Password:</label><br>
+      <input type="password" id="password" name="password" minlength="6" required>
+      <br><br>
+
+      <label for="confirmPassword">Confirm Password:</label><br>
+      <input type="password" id="confirmPassword" name="confirmPassword" required>
+      <br><br>
+
+      <span id="errorMessage" style="color: red; display: none;">Passwords do not match!</span>
+      <br><br>
+
+      <button class="btn" type="submit">Register</button>
+
+      <p>Already have an account? <a href="/login">Log in</a></p>
+  </form>
+  <a href="/auth/login" class="google-login-button">Login with Google</a>
+</div>
+
+<% if (typeof errors !== 'undefined' && errors !== null && errors.length > 0) { %>
+    <ul>
+      <% errors.forEach(function(error) { %>
+        <li style="color: red;"><%= error.msg %></li>
+      <% }) %>
+    </ul>
+<% } %>
+
+<%- include("../partials/footer.ejs") %>
+
+<script>
+    // console.log("script starting");
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('registerForm');
+      const errorMessage = document.getElementById('errorMessage');
+
+      form.addEventListener('submit', async function(event) {
+        // console.log("the eventlistiner is targeted");
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        console.log(password, confirmPassword);
+
+        if (password !== confirmPassword) {
+          event.preventDefault();
+          errorMessage.style.display = 'block';
+        } else {
+          errorMessage.style.display = 'none';
+        }
+      });
+    });
+    // console.log("ending of script");
+</script>

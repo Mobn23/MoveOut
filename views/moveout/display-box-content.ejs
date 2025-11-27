@@ -1,0 +1,37 @@
+<%- include("../partials/header.ejs") %>
+
+<% if (boxData && boxData.length > 0) { %>
+    <h1><%= boxData[0].category_name %></h1>
+    <% boxData.forEach(item => { %>
+        <!-- Add this debug info temporarily we can see them in dev tool-->
+        <!-- <div style="display: none;">
+            File path: <%= item.boxes_content_file_path %><br>
+            File type: <%= item.boxes_content_file_type %><br>
+            Original name: <%= item.boxes_content_orginal_name %>
+        </div> -->
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">File: <%= item.boxes_content_orginal_name %></h5>
+                    <% if (item.boxes_content_file_type.startsWith('image/')) { %>
+                        <img src="/multer-uploads/<%= item.boxes_content_file_path %>" class="img-fluid" alt="Image Content">
+                    <% } %>
+
+                    <% if (item.boxes_content_file_type.startsWith('audio/')) { %>
+                        <audio controls>
+                            <source src="/multer-uploads/<%= item.boxes_content_file_path %>" type="<%= item.boxes_content_file_type %>">
+                            Your browser does not support the audio element.
+                        </audio>
+                    <% } %>
+
+                    <% if (item.boxes_content_file_type.startsWith('text/plain')) { %>
+                        <div class="text-area"><pre class="pre-element text-wrap"><%= item.fileContent %></pre></div> <!-- Display the text file content -->
+                    <% } %>
+
+                </div>
+            </div>
+    <% }); %>
+<% } else { %>
+    <p>No content found for this box.</p>
+<% } %>
+
+<%- include("../partials/footer.ejs") %>

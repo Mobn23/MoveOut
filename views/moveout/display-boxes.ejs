@@ -1,0 +1,58 @@
+<%- include("../partials/header.ejs") %>
+
+<div class="boxes-main-container">
+<% if (data && data.length > 0) { %>
+    <div class="box-container">
+        <% data.forEach(function(boxData) { %> 
+            <div class="storage-box">
+                <img src="/box.png" class="box-image" alt="box image">
+                <div class="label-qr-container">
+                    <div class="category-for-box"> <h6> <%= boxData.category_name %> </h6></div>
+                    <img src="<%= boxData.label_with_qr_path %>" class="label-qr-image" alt="Label With QR Image" data-box-id="<%= boxData.box_id %>">
+                    <div class="action-icons">
+                        <!-- Edit Icon -->
+                        <a href="/edit-box-content/<%= boxData.box_id %>" class="edit-icon">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <!-- Delete Icon -->
+                        <button onclick="confirmBoxDeletion(event, '<%= boxData.box_id %>')" class="delete-icon">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+<% } else { %>
+    <p>No boxes found.</p>
+<% } %>
+</div>
+
+<script>
+    function confirmBoxDeletion(event, boxId) {
+        event.preventDefault();
+        const confirmation = confirm("Delete this box with all its relevant data?");
+        if (confirmation) {
+            // Redirect to the deletion route if confirmed
+            window.location.href = `/delete-box/${boxId}`;
+        }
+    }
+
+    // Event listener for clicking on the label image
+    const labelImages = document.getElementsByClassName("label-qr-image");//getElementsByClassName returns HTMLCollection similar to array but it's not an array so we need to convert is to an array in order to use (.forEach(), .map(), or .filter()).
+
+    // Convert HTMLCollection to an array to use forEach
+    Array.from(labelImages).forEach(element => {
+        element.addEventListener("click", function() {
+            const boxId = this.getAttribute("data-box-id");
+
+            if (boxId) {
+                window.location.href = `/edit/label/${boxId}`; //Redirect to the edit label route
+            } else {
+                console.error("Box ID is missing for this label.");
+            }
+        });
+    });
+</script>
+
+<%- include("../partials/footer.ejs") %>
